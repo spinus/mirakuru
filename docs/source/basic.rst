@@ -116,6 +116,63 @@ notify their running by creating a .pid file.
 
 
 
+Timeouts
+--------
+
+You can hand a timeout parameter to every executor. Thus, your executor will raise an exception if something will go
+(:class:`mirakuru.exceptions.TimeoutExpired`) wrong during this time. Default value of timeout is ``None``, so it is a
+good practice to set this. Look at these examples:
+
+TCPExecutor
++++++++++++
+
+If python's simple http server will not be got up within two seconds after calling ``start`` method, you will get an exception.
+
+.. code-block:: python
+
+    from mirakuru import TCPExecutor
+
+    executor = TCPExecutor('python -m SimpleHTTPServer', host='localhost', port=PORT, timeout=2)
+    executor.start()
+
+PidExecutor
++++++++++++
+
+If file will not be created during one second after calling ``start`` method, you will get an exception.
+
+.. code-block:: python
+
+    from mirakuru import PidExecutor
+
+    executor = PidExecutor('touch file.pid', 'file.pid', timeout=1)
+    executor.start()
+
+HTTPExecutor
+++++++++++++
+
+If executor will not be able to connect to the url within ten seconds after calling ``start`` method, you will get an exception.
+
+.. code-block:: python
+
+    from mirakuru import HTTPExecutor
+
+    executor = HTTPExecutor('./run_my_server.py', 'http://127.0.0.1:8888', timeout=10)
+    executor.start()
+
+OutputExecutor
+++++++++++++++
+
+If executor will not be able to get a specific output during five seconds after calling ``start`` method, you will get an exception.
+
+.. code-block:: python
+
+    from mirakuru import OutputExecutor
+
+    executor = OutputExecutor('./run_my_program.py', '[INFO] Program has been running.', timeout=5)
+    executor.start()
+
+
+
 As a Context manager
 --------------------
 
